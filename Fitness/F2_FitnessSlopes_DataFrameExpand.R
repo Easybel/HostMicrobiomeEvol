@@ -8,7 +8,7 @@ library(readxl)
 ## Get data:
 #load the data
 inPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/"
-inName = "Fitness_Slope_wError_df_Pairs_w1to15.RData"
+inName = "Fitness_Slope_wError_df_Pairs_w1to15_woNegFitness.RData"
 outPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/"
 
 a = load(paste(inPath, inName, sep = ""))
@@ -67,7 +67,13 @@ plot2 <- ggplot(data = df_expand, aes(x = institution, y = slope))+ #, fill = tr
 plot2
 
 
+#### also get the data where you don't expand 
+drop_fromPairs <- c("sampleIdx_start","sampleIdx_end","simpleMean_start","simpleMean_end")
+df_notexpanded <- df_Pairs_w0_1to15[-c(8:12)]
+names(df_notexpanded)[names(df_notexpanded) == "collectMean"] <- "slope"
+
 ###### save the output
-save(df_expand,  file = paste(outPath,"df_expand_FitnessPairs_w1to15.RData", sep = ""))
+save(df_expand,  file = paste(outPath,"df_expand_FitnessPairs_w1to15_woNegFitness.RData", sep = ""))
+save(df_notexpanded,  file = paste(outPath,"df_notexpand_FitnessPairs_w1to15_woNegFitness.RData", sep = ""))
 
 

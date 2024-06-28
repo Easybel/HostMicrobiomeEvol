@@ -50,8 +50,14 @@ bray_curtis_plot <- ggplot(data = bray_curtis_pcoa_df, aes(x=pcoa1, y=pcoa2, col
 
 bray_curtis_plot
 
+par (mfrow = c(1,2))
+pcoa <- capscale(log1p(SpecAbund_mat) ~ 1, distance = 'bray', sqrt.dist = TRUE, scaling = 1)
+plot(pcoa, main = 'PCoA (MDS)', type = 'n', xlim=c(-2,2))
+points (pcoa, display = 'si', col = SampleInfo$week, pch = SampleInfo$week)
+text(pcoa, display = 'sp', col = "#FF000080", cex = 0.6, scaling = 1, select = colSums(SpecAbund_mat>0)>20)
+legend ('bottomleft', pch = 1:4, col = 1:4, legend = 1:4, title = 'GROUP', cex = 0.6)
 
-
+ylim=c(0,20)
 ### other package
 #PCOA <- pcoa(dist)
 

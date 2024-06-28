@@ -23,6 +23,9 @@ df <- data.In[ c("label","serie","line","lab","week","replicate","treat","growth
 df_all <- df[df$week=="0" | df$week=="1" | df$week=="15",]
 df_all <- df_all[df_all$lab!="LEI",]
 
+## kick out negative fitness values:
+df_all <- df_all[df_all$growth_nematode_m >= 0,]
+
 ##########################################################
 ##########################################################
 #### First, do the easy analysis:
@@ -62,6 +65,23 @@ for (i in 1:dim(df_all_Simple)[1]) {
   df_all_Simple$sampleStd[i] <- sampleStd
   
 } 
+plot1 <- ggplot(data = df_all[(df_all$week==1 | df_all$week==0),], aes(x = line, y = growth_nematode_m))+ #, fill = treatment)) +
+  geom_boxplot(alpha = 1)+
+  geom_jitter(aes(color = lab),alpha=1) +
+  theme_bw() + 
+  xlab("") + 
+  ylab("nematode growth rate")+
+  theme(axis.text.x = element_text(angle = 90))
+plot1
+
+plot2 <- ggplot(data = df_all[(df_all$week==15),], aes(x = line, y = growth_nematode_m))+ #, fill = treatment)) +
+  geom_boxplot(alpha = 1)+
+  geom_jitter(aes(color = lab),alpha=1) +
+  theme_bw() + 
+  xlab("") + 
+  ylab("nematode growth rate")+
+  theme(axis.text.x = element_text(angle = 90))
+plot2
 
 ##### Plot the easy data:
 ## make boxplots for institutions and time points 
@@ -148,8 +168,8 @@ for (i in 1:dim(df_Pairs_w0_1to15)[1]) {
 df_Pairs_w0_1to15 <- df_Pairs_w0_1to15[complete.cases(df_Pairs_w0_1to15[ , 7]), ]
 
 
-save(df_all_Simple,  file = paste(outPath,outName,"_df_all_Simple.RData", sep = ""))
-save(df_Pairs_w0_1to15,  file = paste(outPath,outName,"_df_Pairs_w1to15.RData", sep = ""))
+save(df_all_Simple,  file = paste(outPath,outName,"_df_all_Simple_woNegFitness.RData", sep = ""))
+save(df_Pairs_w0_1to15,  file = paste(outPath,outName,"_df_Pairs_w1to15_woNegFitness.RData", sep = ""))
 
 
 ############################ get the data for Ellie
