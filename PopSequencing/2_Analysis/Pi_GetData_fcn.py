@@ -1,9 +1,21 @@
 def GetData(files, chrs, chrs_end, subsample):
 
-## an option that I want to biuld in:
-    # set all windows with less than minCov % covered with usable data to a pi of na
-    # maybe output this then as df_shiftRaw_cut or something 
 
+#in that function it:
+#  1. shifts the window position so that it applies to the whole genome and not chromosome position
+#  2. all samples are joined in one data frame
+#  3. there is df_shiftRaw with the raw data for %-window covered and diversity (e.g. pi diversity) per window
+#  4. there is also df_shiftNorm with the window pi multiplied with the frac    
+
+###
+
+# variables, examples:
+# chromosomes=["NC_003279.8","NC_003280.10","NC_003281.10","NC_003282.8","NC_003283.11","NC_003284.9","NC_001328.1"]
+# chromosomes_end = [1.50750e+07, 3.03500e+07, 4.41350e+07, 6.16300e+07, 8.25550e+07, 1.00270e+08, 1.00285e+08]
+
+
+##### CODE ##########################################################################################################
+    
     import numpy as np
     import pandas as pd
 
@@ -32,8 +44,8 @@ def GetData(files, chrs, chrs_end, subsample):
 
         df_pre.set_index("ID",inplace=True)
 
-        ### modify df_pre -- such that it can be plotted in one picture
-        ### this only has to be done for the first sample, as the others have unique ID
+        ### modify df_pre --> df_shiftRaw, so that it can be plotted in one picture
+        ### -- this only has to be done for the first sample, as the others have unique ID and can be joined with the first
     
         if i==0: # for the first sample we have to shift the positions
             # start with the first chromosome that doesnt have to be shifted!
@@ -55,14 +67,16 @@ def GetData(files, chrs, chrs_end, subsample):
     ## now get the df where the pi and freq are multiplied per window
     df_shiftNorm = df_shiftRaw[["chr","window"]]
     collect_NanNum = np.zeros(len(samName_collect))
-
-    ## loop over all sample names and add the columns that have the normalized pi value
+    collect_sumofWeights = np.zeros(len(samName_collect))
+    
+    ## loop over all sample names and add the columns that have the normalized pi value (pi * fi for each window)
     for i in range(len(samName_collect)):    
         nameHere = samName_collect[i]
         normPi = np.array(df_shiftRaw["freq_" + nameHere].values)*np.array(df_shiftRaw["pi_" + nameHere].values)
         df_shiftNorm["piNorm_" + nameHere] = normPi
         df_shiftNorm
 
-        collect_NanNum[i] = sum(np.isnan(normPi))
+        collect_NanNum[i] = np.sum(np.isnan(normPi))
+        collect_sumofWeights[i] = np.sum(np.array(df_shiftRaw["freq_" + nameHere].values))
 
-    return samName_collect, df_shiftRaw, df_shiftNorm, collect_NanNum
+    return samName_collect, df_shiftRaw, df_shiftNorm, collect_sumofWeights, collect_NanNum
