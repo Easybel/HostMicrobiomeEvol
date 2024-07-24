@@ -3,16 +3,16 @@ def GetPiOverview(sampleNames, df_shiftRaw, df_shiftNorm, collect_sumofWeights, 
     import numpy as np
     import pandas as pd
     ## prepare data to get the 
-    samName_collect_pi = ["pi_"+s for s in sampleNames]
-    samName_collect_piNorm = ["piNorm_"+s for s in sampleNames]
+    samName_collect_div = ["div_"+s for s in sampleNames]
+    samName_collect_divNorm = ["divNorm_"+s for s in sampleNames]
     
     # get part of the data frames
-    df_pi = df_shiftRaw[samName_collect_pi]
-    df_piNorm = df_shiftNorm[samName_collect_piNorm]
+    df_div = df_shiftRaw[samName_collect_div]
+    df_divNorm = df_shiftNorm[samName_collect_divNorm]
 
     
-    ## get the row names
-    rowNames = df_pi.mean(0).index.tolist()
+    ## get the row names for the new data frame, where each row is a sample
+    rowNames = df_div.mean(0).index.tolist()
     
     institution = []
     treatment = []
@@ -39,10 +39,10 @@ def GetPiOverview(sampleNames, df_shiftRaw, df_shiftNorm, collect_sumofWeights, 
         'inst_treat': inst_treat,
         'week': week,
         'rep': rep,
-        'pi_mean': df_pi.mean(0),
-        'pi_std': df_pi.std(0),
-        'piWeight_mean': np.divide(df_piNorm.sum(0).values,collect_sumofWeights),
-        'piWeight_std': df_piNorm.std(0).values}
+        'div_mean': df_div.mean(0),
+        'div_std': df_div.std(0),
+        'divWeight_mean': np.divide(df_divNorm.sum(0).values,collect_sumofWeights),
+        'divWeight_std': df_divNorm.std(0).values}
         #'piNormwNaN_mean': df_piNorm.mean(0).values * (1- collect_NanNum/df_shiftRaw.shape[0]),
         #'piNormwNaN_std': df_piNorm.std(0).values * (1 - collect_NanNum/df_shiftRaw.shape[0])}
     )
