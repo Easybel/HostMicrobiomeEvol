@@ -78,6 +78,6 @@ def GetData(files, chrs, chrs_end, subsample):
         df_shiftNorm["divNorm_" + nameHere] = normDiv
 
         collect_NanNum[i] = np.sum(np.isnan(normDiv))
-        collect_sumofWeights[i] = np.sum(np.array(df_shiftRaw["frac_" + nameHere].values))
+        collect_sumofWeights[i] = np.sum(np.array(df_shiftRaw["frac_" + nameHere].values)[~np.isnan(normDiv)])
 
     return samName_collect, df_shiftRaw, df_shiftNorm, collect_sumofWeights, collect_NanNum
