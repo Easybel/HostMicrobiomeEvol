@@ -9,10 +9,8 @@ library(readxl)
 ## Get data:
 #load the data
 data.In = read_excel("/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/dataset_total_Mar21_editIR.xlsx", sheet = 1)
-outPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/"
-outName = "Fitness_Slope_wError"
-
-
+outPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/output/"
+outName = "Fitness101024"
 
 # only keep interesting columns 
 df <- data.In[ c("label","serie","line","lab","week","replicate","treat","growth_nematode_m") ]
@@ -135,7 +133,7 @@ for (i in 1:dim(df_Pairs_w0_1to15)[1]) {
   
   simpleMean_1 <- mean(fitness_1)
   simpleMean_2 <- mean(fitness_2)
-  simpleSlope <- (simpleMean_2 - simpleMean_1)/(week_end - week_start)
+  simpleSlope <- (simpleMean_2 - simpleMean_1)
   
   ## write the data to the data frame
   df_Pairs_w0_1to15$SampleIdx_start[i] <- list(sampleIdx_start)
@@ -154,7 +152,7 @@ for (i in 1:dim(df_Pairs_w0_1to15)[1]) {
   
   for (s in 1:startNum) {
     for (x in 1:endNum) {
-      sslope <- (fitness_2[x] - fitness_1[s])/(week_end - week_start)
+      sslope <- (fitness_2[x] - fitness_1[s])
       collectSlope <- rbind(collectSlope, sslope)
     }
   }
@@ -168,10 +166,10 @@ for (i in 1:dim(df_Pairs_w0_1to15)[1]) {
 df_Pairs_w0_1to15 <- df_Pairs_w0_1to15[complete.cases(df_Pairs_w0_1to15[ , 7]), ]
 
 
-save(df_all_Simple,  file = paste(outPath,outName,"_df_all_Simple_woNegFitness.RData", sep = ""))
-save(df_Pairs_w0_1to15,  file = paste(outPath,outName,"_df_Pairs_w1to15_woNegFitness.RData", sep = ""))
 
+## save the data
+#save(df_all_Simple,  file = paste(outPath,outName,"_df_all_Simple_woNegFitness.RData", sep = ""))
+#save(df_Pairs_w0_1to15,  file = paste(outPath,outName,"_df_Pairs_w1to15_woNegFitness.RData", sep = ""))
 
-############################ get the data for Ellie
 
 

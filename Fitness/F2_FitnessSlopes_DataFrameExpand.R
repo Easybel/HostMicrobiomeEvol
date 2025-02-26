@@ -7,9 +7,9 @@ library(readxl)
 
 ## Get data:
 #load the data
-inPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/"
-inName = "Fitness_Slope_wError_df_Pairs_w1to15_woNegFitness.RData"
-outPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/"
+inPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/output/"
+inName = "Fitness101024_df_Pairs_w1to15.RData"
+outPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/2_Fitness/2_Analysis/output/"
 
 a = load(paste(inPath, inName, sep = ""))
 df_Pairs_w0_1to15 <- get(a)
@@ -26,9 +26,9 @@ fitness_slope <- df_Pairs_w0_1to15$collectMean
 m1 <- aov(collectMean ~ treatment+institution, data=df_Pairs_w0_1to15)
 summary(m1)
 
-plot1 <- ggplot(data = df_Pairs_w0_1to15, aes(x = treatment, y = collectMean, fill = institution)) +
+plot1 <- ggplot(data = df_Pairs_w0_1to15, aes(x = institution, y = collectMean)) +
   geom_boxplot()+
-  geom_jitter(aes(color = institution), alpha = 0.7, )
+  geom_jitter(aes(color = treatment), alpha = 0.7, )
 plot1
 
 
@@ -73,7 +73,9 @@ df_notexpanded <- df_Pairs_w0_1to15[-c(8:12)]
 names(df_notexpanded)[names(df_notexpanded) == "collectMean"] <- "slope"
 
 ###### save the output
-save(df_expand,  file = paste(outPath,"df_expand_FitnessPairs_w1to15_woNegFitness.RData", sep = ""))
-save(df_notexpanded,  file = paste(outPath,"df_notexpand_FitnessPairs_w1to15_woNegFitness.RData", sep = ""))
+#save(df_expand,  file = paste(outPath,"df_expand_FitnessPairs_w1to15_woNegFitness.RData", sep = ""))
+#save(df_notexpanded,  file = paste(outPath,"df_notexpand_FitnessPairs_w1to15_woNegFitness.RData", sep = ""))
+
+
 
 

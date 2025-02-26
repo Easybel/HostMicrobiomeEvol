@@ -2,7 +2,7 @@ def GetPiOverview(sampleNames, df_shiftRaw, df_shiftNorm, collect_sumofWeights, 
     
     import numpy as np
     import pandas as pd
-    ## prepare data to get the 
+    ## collect the column names that you want with the right sample names
     samName_collect_div = ["div_"+s for s in sampleNames]
     samName_collect_divNorm = ["divNorm_"+s for s in sampleNames]
     

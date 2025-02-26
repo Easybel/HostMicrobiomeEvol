@@ -23,8 +23,9 @@ BioR.theme <- theme(
   legend.text = element_text(size = 14),
   legend.key = element_blank())
 
-inName = "KraBracken_DBstandard_042024_0minFrac_genus_FromPY.csv"
-inPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/1_Genomics/2_EvolGenomics/2_Metagenomics/1_taxonomy/"
+inName = "KraBracken_DBplusPf_062024_0.01minFrac_genus_FromPY.csv"
+inName = "KraBracken_DBplusPf_082024_0minFrac_genus_FromPY.csv"
+inPath = "/home/isabel/Documents/postDoc_Amsterdam/1_EvolWormJourney/1_Genomics/2_EvolGenomics/2_Metagenomics/1_taxonomy/3_FinalAbunData/"
 
 ################ LOAD DATA #######################
 dataIn <- read.csv(paste(inPath, inName, sep = ""),sep = ",", header = TRUE)
@@ -48,7 +49,6 @@ SampleInfo$Paracoccus <- SpecAbund$Paracoccus >= 0.2
 SampleInfo$Serratia <- SpecAbund$Serratia >= 0.01
 SampleInfo$Brucella <- SpecAbund$Brucella >= 0.2
 
-
 ###### Prepare data and loo at it
 
 a <- summary (dataframe)
@@ -58,15 +58,15 @@ which(is.na (SpecAbund), arr.ind = T)
 image(t(SpecAbund_mat))
 hist(log10(SpecAbund_mat), breaks = 100)
 
+# pre-transforming the data with hellinger transform 
 Spec_Abund_trafo <- decostand(SpecAbund_mat, method = "hellinger")
 PCA_trafo <- rda(Spec_Abund_trafo)
 #ordiplot(PCA_trafo)
 
 ## get the plot for PC1 and PC2
 
-plot1 <- ordiplot(PCA_trafo, choices=c(1,2)) 
-plot1
-#+ ordiellipse(PCA_trafo, groups = SampleInfo$institution)
+plot1 <- ordiplot(PCA_trafo, choices=c(1,2))
+
 #### analyse the eigenvectors!!
 
 vec <- PCA_trafo$CA$v
@@ -97,19 +97,13 @@ plotgg1 <- ggplot() +
   BioR.theme +
   ggsci::scale_colour_npg()
   #coord_fixed(ratio=1)
+
 plotgg1
-## make the ellipses
-
-CompOI_PC1 <- CompOI_PC1*0.7
-CompOI_PC2 <- CompOI_PC2*0.7
-
-## get the coordinates for different subsamples
-sites_w01 <- sites.long1[(sites.long1$week=="0" | sites.long1$week=="1") ,]
-sites_w15 <- sites.long1[(sites.long1$week=="15"),]
-
+CompOI_PC1 <- CompOI_PC1
+CompOI_PC2 <- CompOI_PC2
 
 plotgg1 + geom_segment(aes(x=0, y=0, xend=CompOI_PC1[1], yend=CompOI_PC2[1]), arrow = arrow(length=unit(0.2, 'cm'))) + 
-  annotate("text", x=CompOI_PC1[1]*1, y=CompOI_PC2[1]*1.8, label=SpecOI_PC1[1], color="black", size=2.2) + 
+  annotate("text", x=CompOI_PC1[1]*1, y=CompOI_PC2[1]*1.8, label=SpecOI_PC1[1], color="black", size=2.2) +
   
   geom_segment(aes(x=0, y=0, xend=CompOI_PC1[2], yend=CompOI_PC2[2]), arrow = arrow(length=unit(0.2, 'cm'))) + 
   annotate("text", x=CompOI_PC1[2]*1, y=CompOI_PC2[2]*1.4, label=SpecOI_PC1[2], color="black", size=2.2) + 
@@ -121,10 +115,8 @@ plotgg1 + geom_segment(aes(x=0, y=0, xend=CompOI_PC1[1], yend=CompOI_PC2[1]), ar
   annotate("text", x=CompOI_PC1[4]*0.85, y=CompOI_PC2[4]*1.3, label=SpecOI_PC1[4], color="black", size=2.2) + 
   
   geom_segment(aes(x=0, y=0, xend=CompOI_PC1[5], yend=CompOI_PC2[5]), arrow = arrow(length=unit(0.2, 'cm'))) + 
-  annotate("text", x=CompOI_PC1[5]*0.87, y=CompOI_PC2[5]*1.2, label=SpecOI_PC1[5], color="black", size=2.2) + 
-  #stat_ellipse(level = 0.95, data=sites.long1[sites.long1$week=="15",], 
-  #             aes(x=axis1, y=axis2, colour=institution), alpha = 0.5)
-  stat_ellipse(level = 0.95, data=sites_w15, 
-             aes(x=axis1, y=axis2, colour=institution), alpha = 1)
+  annotate("text", x=CompOI_PC1[5]*0.87, y=CompOI_PC2[5]*1.2, label=SpecOI_PC1[5], color="black", size=2.2)
+
+
 
 
